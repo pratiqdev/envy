@@ -1,0 +1,34 @@
+{
+  "name": "reginald2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "build": "clear && tsc",
+    "test": "clear && tsc && mocha",
+    "debug": "clear && tsc && DEBUG=envy:* mocha",
+    "runnit": "clear && tsc && DEBUG=envy:* node index.js",
+    "runnit-quiet": "clear && tsc && node index.js",
+    "file-debug": "clear && tsc && DEBUG=envy:* node dev/file-debug.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/node": "^18.7.9",
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.1"
+  },
+  "devDependencies": {
+    "@types/spellchecker": "^3.5.0",
+    "an-array-of-english-words": "^2.0.0",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.18",
+    "typescript": "^4.7.4",
+    "uuid": "^9.0.0"
+  }
+}
