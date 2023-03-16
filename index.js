@@ -1,2 +1,2 @@
-import envy from './dist/envy.js'
+import envy from './dist/main.js'
 export default envy

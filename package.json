@@ -1,33 +1,35 @@
 {
-  "name": "reginald2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "envy",
+  "version": "1.0.3",
+  "description": "Easily load, parse and manage env variables",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "type": "module",
-  "types": "dist/main.d.ts",
   "scripts": {
-    "build": "clear && tsc",
+    "build": "tsup",
     "test": "clear && tsc && mocha",
     "debug": "clear && tsc && DEBUG=envy:* mocha",
     "runnit": "clear && tsc && DEBUG=envy:* node index.js",
     "runnit-quiet": "clear && tsc && node index.js",
     "file-debug": "clear && tsc && DEBUG=envy:* node dev/file-debug.js"
   },
-  "keywords": [],
+  "keywords": ["env", "node", "typescript"],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/node": "^18.7.9",
     "debug": "^4.3.4",
     "dotenv": "^16.0.1"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/node": "^18.15.3",
     "@types/spellchecker": "^3.5.0",
     "an-array-of-english-words": "^2.0.0",
     "chai": "^4.3.6",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.18",
+    "tsup": "^6.6.3",
     "typescript": "^4.7.4",
     "uuid": "^9.0.0"
   }

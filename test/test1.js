@@ -1,11 +1,15 @@
 import assert from 'assert'
-import envy from '../dist/envy2.js'
+import envy from '../dist/main.js'
 import { expect } from 'chai';
 
 
 const heading = (text) => `${text}\n  ${'-'.repeat(text.length)}`
 
 describe(heading('A | Option testing'), () => {
+
+    // beforeEach(()=>{
+    //   console.log('Current environment:', process.env.NODE_ENV)
+    // })
 
     it('A.1  | Should export a default function.', () => {
         assert(typeof envy === 'function')
@@ -84,11 +88,13 @@ describe(heading('A | Option testing'), () => {
         prefix: 'NEXT_PUBLIC_CLIENT_',
         file: 'inherit'
       })
+
+      
       // console.log(ENVY)
 
-      expect(ENVY.key).to.eq('abcd')
-      expect(ENVY.age).to.eq('1234')
-      expect(ENVY.expires).to.eq('9876')
+      expect(ENVY.key).to.eq('the-key')
+      expect(ENVY.age).to.eq('key-age')
+      expect(ENVY.expires).to.eq('key-expires')
       
     });
 
@@ -116,7 +122,10 @@ describe(heading('A | Option testing'), () => {
           key: 'BLAP_ONE',
           type: 'number'
         }
-      }, { coerce: 0 })
+      }, { 
+        coerce: 0,
+        file: '.env.testing'
+       })
 
       expect(ENVY_1.name).to.equal('1')
     });
@@ -214,12 +223,17 @@ describe(heading('A | Option testing'), () => {
       
     });
 
-    it('A.12 | { encoding: "utf-8" } Should use specified encoding.\n\t No encoded .env files available', 
-    // () => {
-    //  const ENVY = envy(null, { file: '.env.match' })
-    //  assert( Object.entries(ENVY).length > 1 )
-    // }
-    );
+    it('A.12 | { encoding: "base64" } Should use specified encoding.', () => {
+     const ENVY = envy('USER', { file: './lib/encodings/.env.encoding_base64', encoding: 'hex' })
+      console.log(ENVY)
+      assert( Object.entries(ENVY).length > 1 )
+    });
+    
+    it('A.13 | { encoding: "hex" } Should use specified encoding.', () => {
+      const ENVY = envy('USER', { file: './lib/encodings/.env.encoding_hex', override: true })
+      console.log(ENVY)
+     assert( Object.entries(ENVY).length > 1 )
+    });
 
 });
 

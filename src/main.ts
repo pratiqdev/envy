@@ -3,18 +3,20 @@ import dotenv from 'dotenv'
 import debug from 'debug'
 
 import { 
-    T_EnvyConfig,
-    T_EnvyConfigItem,
-    T_EnvyConfigTupleKey,
-    T_EnvyConfigTupleValue,
-    T_EnvyDirectObject,
-    T_EnvyOptions,
-    T_EnvyParseConfig,
-    T_EnvyParseItem,
-    E_EncodingTypes,
-    E_EnvyConfigItemTypes,
-    E_EnvyVerboseLevels
-} from './interfaces.js'
+    EnvyConfig,
+    EnvyConfigItem,
+    EnvyConfigTupleKey,
+    EnvyConfigTupleValue,
+    EnvyDirectObject,
+    EnvyOptions,
+    EnvyParseConfig,
+    EnvyParseItem,
+    EncodingTypes,
+    CoerceTypes,
+    Encoding,
+    Coerce,
+    Verbose
+} from './types.js'
 
 const log = {
     main:       debug('envy:main    '),
@@ -38,7 +40,7 @@ const log = {
  * 
  * 
 */
-const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
+const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
     log.main('ENVY START ' + '='.repeat(60))
     log.config(JSON.stringify(config, null, 2))
     log.options(JSON.stringify(options, null, 2))
@@ -67,7 +69,7 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
     //$ handle env file import / parsing with dotenv
     //$ override is true to allow calling envy multiple times to get 
     //& env vars from multiple files                                                                
-    if(settings.file === 'inherit' || settings.file === ''){
+    if(settings.file === 'inherit' || !settings.file){
         try{
 
             dotenv.config({override: settings.override, encoding: settings.encoding }); 
@@ -115,14 +117,14 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
     //& Output an error log as an error block                                                       
     let throwError = (...msg:string[]) => {
         log.error(msg.join('\n'))
-        if(settings.verbose === 0){
+        if(settings.verbose === Verbose.DISABLED){
             return;
-        }else if(settings.verbose === 1){
+        }else if(settings.verbose === Verbose.ENABLED){
             console.log(clr.red + '-'.repeat(100))
             console.log(clr.bright + '| ENVY ERROR:')
             msg.forEach(m => console.log(clr.reset + clr.red + '| ' + clr.yellow + m))
             console.log(clr.red + '-'.repeat(100) + clr.reset)
-        }else if(settings.verbose === 2){
+        }else if(settings.verbose === Verbose.THROW){
             throw new Error('\n\t'+msg.join('\n\t'))
         }
     }
@@ -141,7 +143,7 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
     ]
 
     //& Simple util to set keyvals on the returnable object
-    const setReturnable = (k:T_EnvyConfigTupleKey, v:any) => {
+    const setReturnable = (k:EnvyConfigTupleKey, v:any) => {
         log.set(`Setting "${k}" = "${v}" <${typeof v}>`)
         returnable[k] = v
     }
@@ -157,7 +159,7 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
 
 
     //& Coerce variable types to the specified type                                                 
-    const coerceTypes = (ITEM:T_EnvyParseItem) => {
+    const coerceTypes = (ITEM:EnvyParseItem) => {
 
         log.coerce(`\n>>>>>>>>>> coercing`)
 
@@ -207,11 +209,11 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
         //$ auto-coerce if enabled
         if(settings.coerce === 2 && ITEM.raw){
             log.coerce(`Attempting auto-coercion`)
-            if(/^-?[0-9,\._]+$/.test(ITEM.raw) && (ITEM.raw.match(/\./g)?.length ?? 0) <= 1) ITEM.type = E_EnvyConfigItemTypes.NUMBER
-            else if(ITEM.raw.startsWith('"{') && ITEM.raw.endsWith('}"')) ITEM.type = E_EnvyConfigItemTypes.OBJECT
-            else if(!(ITEM.raw.startsWith('"{') || ITEM.raw.startsWith('{"')) && (ITEM.raw.match(/,/g)?.length ?? 0) > 1) ITEM.type = E_EnvyConfigItemTypes.ARRAY
-            else if(ITEM.raw.toLowerCase() === 'true' || ITEM.raw.toLowerCase() === 'false') ITEM.type = E_EnvyConfigItemTypes.BOOLEAN
-            else ITEM.type = E_EnvyConfigItemTypes.STRING
+            if(/^-?[0-9,\._]+$/.test(ITEM.raw) && (ITEM.raw.match(/\./g)?.length ?? 0) <= 1) ITEM.type = Coerce.NUMBER
+            else if(ITEM.raw.startsWith('"{') && ITEM.raw.endsWith('}"')) ITEM.type = Coerce.OBJECT
+            else if(!(ITEM.raw.startsWith('"{') || ITEM.raw.startsWith('{"')) && (ITEM.raw.match(/,/g)?.length ?? 0) > 1) ITEM.type = Coerce.ARRAY
+            else if(ITEM.raw.toLowerCase() === 'true' || ITEM.raw.toLowerCase() === 'false') ITEM.type = Coerce.BOOLEAN
+            else ITEM.type = Coerce.STRING
         }
 
         //$ log conversion methods / values
@@ -230,9 +232,9 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
 
                 ITEM.raw = ITEM.raw.includes('.')
                             ? parseFloat(ITEM.raw)
-                            : Number(ITEM.raw) !== NaN 
-                                ? Number(ITEM.raw) 
-                                : parseInt(ITEM.raw)
+                            : Number.isNaN(ITEM.raw) 
+                                ? parseInt(ITEM.raw)
+                                : Number(ITEM.raw) 
             }
 
             setReturnable(ITEM.objKey, ITEM.raw)
@@ -312,18 +314,18 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
 
     //$ parse an individual config keyval for inferred type, defaults
     //& missing keus and prefix matching                                                            
-    const parseEnvyItem = (envyItem: T_EnvyParseConfig) => {
+    const parseEnvyItem = (envyItem: EnvyParseConfig) => {
 
         const { _key, _val, _replace, _isEnv } = envyItem
 
         log.parse(`\n>>>>>>>>>> parsing`, envyItem)
 
-        let ITEM:T_EnvyParseItem = {
+        let ITEM:EnvyParseItem = {
             objKey: '',
             key: '',
             raw: undefined,
             default: undefined,
-            type: E_EnvyConfigItemTypes.STRING
+            type: Coerce.STRING
         }
 
         if(_isEnv){
@@ -352,7 +354,7 @@ const envy = (config?: T_EnvyConfig, options?: T_EnvyOptions) => {
                 log.parse(`Parsing as config item (object)`)
                 ITEM.key += _val.key
                 ITEM.configType = 'object'
-                ITEM.type = _val.type ?? typeof _val.default ?? E_EnvyConfigItemTypes.STRING
+                ITEM.type = _val.type ?? typeof _val.default ?? Coerce.STRING
                 ITEM.default = _val.default 
                 log.parse('inferred type:', ITEM.type)
             }else{
