@@ -1,6 +1,37 @@
 import clr from './colors.js'
 import dotenv from 'dotenv'
-import debug from 'debug'
+
+let log:any = {}
+try {
+  const debug = require('debug')
+  log = {
+    main:       debug('envy:main    '),
+    config:     debug('envy:config  '),
+    options:    debug('envy:options '),
+    settings:   debug('envy:settings'),
+    parse:      debug('envy:parse   '),
+    error:      debug('envy:-----   '),
+    set:        debug('envy:set     '),
+    coerce:     debug('envy:coerce  '),
+    return:     debug('envy:return  '),
+    test:       debug('envy:test')
+  }
+} catch (e) {
+  log = {
+    main:       () => {},
+    config:     () => {},
+    options:    () => {},
+    settings:   () => {},
+    parse:      () => {},
+    error:      () => {},
+    set:        () => {},
+    coerce:     () => {},
+    return:     () => {},
+    test:       () => {}
+  }
+}
+
+
 
 import { 
     EnvyConfig,
@@ -16,20 +47,7 @@ import {
     Encoding,
     Coerce,
     Verbose
-} from './types.js'
-
-const log = {
-    main:       debug('envy:main    '),
-    config:     debug('envy:config  '),
-    options:    debug('envy:options '),
-    settings:   debug('envy:settings'),
-    parse:      debug('envy:parse   '),
-    error:      debug('envy:-----   '),
-    set:        debug('envy:set     '),
-    coerce:     debug('envy:coerce  '),
-    return:     debug('envy:return  '),
-    test:       debug('envy:test')
-}
+} from './types.js'    
 
 
 
