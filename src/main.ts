@@ -1,10 +1,12 @@
 import clr from './colors.js'
 import dotenv from 'dotenv'
+import debug from 'debug'
+import {resolve} from 'path'
 
-let log:any = {}
-try {
-  const debug = require('debug')
-  log = {
+
+
+
+const log = {
     main:       debug('envy:main    '),
     config:     debug('envy:config  '),
     options:    debug('envy:options '),
@@ -15,36 +17,15 @@ try {
     coerce:     debug('envy:coerce  '),
     return:     debug('envy:return  '),
     test:       debug('envy:test')
-  }
-} catch (e) {
-  log = {
-    main:       () => {},
-    config:     () => {},
-    options:    () => {},
-    settings:   () => {},
-    parse:      () => {},
-    error:      () => {},
-    set:        () => {},
-    coerce:     () => {},
-    return:     () => {},
-    test:       () => {}
-  }
 }
 
 
 
 import { 
     EnvyConfig,
-    EnvyConfigItem,
-    EnvyConfigTupleKey,
-    EnvyConfigTupleValue,
-    EnvyDirectObject,
     EnvyOptions,
     EnvyParseConfig,
     EnvyParseItem,
-    EncodingTypes,
-    CoerceTypes,
-    Encoding,
     Coerce,
     Verbose
 } from './types.js'    
@@ -87,19 +68,31 @@ const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
     //$ handle env file import / parsing with dotenv
     //$ override is true to allow calling envy multiple times to get 
     //& env vars from multiple files                                                                
-    if(settings.file === 'inherit' || !settings.file){
+    if(!settings.file){
         try{
-
             dotenv.config({override: settings.override, encoding: settings.encoding }); 
-            log.main('Using default file: ".env"')
+            log.main(`Option "file" set to "${settings.file}" Using default file: ".env"`)
         }catch(err){
             let ERR:any = err
             log.error(`Error running dotenv.config( ):`, err)
         }
-    }else if(settings.file !== ''){
+    }else if(settings.file === 'inherit'){
+        try{
+            let nodeEnv = process?.env?.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env`
+            let res = dotenv.config({
+                override: settings.override, 
+                encoding: settings.encoding, 
+                path: resolve(process.cwd(), nodeEnv)
+            }); 
+            log.main(`Option "file" set to "inherit". Loaded "${nodeEnv}" with name "${res?.parsed?.FILE_NAME}"`)
+        }catch(err){
+            let ERR:any = err
+            log.error(`Error running dotenv.config( ):`, err)
+        }
+    }else{
         try{
             dotenv.config({ path: settings.file, override: settings.override, encoding: settings.encoding })
-            log.main(`Using custom file: "${settings.file}" - ${process?.env.FILE_NAME}`)
+            log.main(`Using custom file: "${settings.file}" - File name: ${process?.env.FILE_NAME}`)
         }catch(err){
             let ERR:any = err
             log.error(`Error running dotenv.config():`, err)
@@ -161,7 +154,7 @@ const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
     ]
 
     //& Simple util to set keyvals on the returnable object
-    const setReturnable = (k:EnvyConfigTupleKey, v:any) => {
+    const setReturnable = (k:string, v:any) => {
         log.set(`Setting "${k}" = "${v}" <${typeof v}>`)
         returnable[k] = v
     }

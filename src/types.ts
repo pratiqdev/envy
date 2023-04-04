@@ -116,14 +116,11 @@ export type EnvyConfigItem = {
     default?: CoerceTypes;
 }
 
-/** Key of envy config tuples */
-export type EnvyConfigTupleKey = string
-
 /** Value of envy config tuples */
 export type EnvyConfigTupleValue = EnvyConfigItem | string | null
 
 /** Tuples used in the envy config object */
-export type EnvyConfig = null | string | { [key:EnvyConfigTupleKey]: EnvyConfigTupleValue }
+export type EnvyConfig = null | string | { [key:string]: EnvyConfigTupleValue }
 
 /** Keys and values directly from process.env */
 export type EnvyDirectObject = { [key:string]: string }

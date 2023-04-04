@@ -1,6 +1,6 @@
 {
-  "name": "envy",
-  "version": "1.0.3",
+  "name": "@pratiq/envy",
+  "version": "1.0.6",
   "description": "Easily load, parse and manage env variables",
   "main": "./dist/main.cjs",
   "module": "./dist/main.js",
@@ -8,29 +8,43 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "test": "clear && tsc && mocha",
-    "debug": "clear && tsc && DEBUG=envy:* mocha",
+    "test": "clear && tsup && mocha",
+    "debug": "clear && tsup && DEBUG=envy:* mocha",
     "runnit": "clear && tsc && DEBUG=envy:* node index.js",
     "runnit-quiet": "clear && tsc && node index.js",
-    "file-debug": "clear && tsc && DEBUG=envy:* node dev/file-debug.js"
+    "file-debug": "clear && tsc && DEBUG=envy:* node dev/file-debug.js",
+    "pub": "pnpm run build && pnpm run test && npm version patch --no-git-tag-version && npm publish --access public"
   },
-  "keywords": ["env", "node", "typescript"],
-  "author": "",
+  "keywords": [
+    "env",
+    "node",
+    "typescript"
+  ],
+  "author": "pratiqdev",
   "license": "ISC",
   "dependencies": {
+    "debug": "^4.3.4",
     "dotenv": "^16.0.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/node": "^18.15.3",
     "@types/spellchecker": "^3.5.0",
-    "debug": "^4.3.4",
     "an-array-of-english-words": "^2.0.0",
     "chai": "^4.3.6",
-    "mocha": "^10.0.0",
-    "nodemon": "^2.0.18",
+    "mocha": "^10.2.0",
     "tsup": "^6.6.3",
-    "typescript": "^4.7.4",
-    "uuid": "^9.0.0"
+    "typescript": "^4.7.4"
+  },
+  "files": [
+    "./dist",
+    "index.js",
+    "README.md"
+  ],
+  "tsup": {
+    "entry": [
+      "./src/main.ts"
+    ],
+    "dts": true
   }
 }
