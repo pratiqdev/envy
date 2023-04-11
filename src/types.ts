@@ -111,11 +111,13 @@ export type EnvyOptions = {
     encoding?: EncodingTypes
 }
 
-/** Config object for individual envy item */
+/**
+ * @name EnvyConfigItem   
+ * Config object for individual envy item */
 export type EnvyConfigItem = {
     key: string;
     type?: CoerceTypes;
-    default?: CoerceTypes;
+    default?: string;
 }
 
 /** Value of envy config tuples */

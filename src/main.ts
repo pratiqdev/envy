@@ -3,9 +3,6 @@ import dotenv from 'dotenv'
 import debug from 'debug'
 import {resolve} from 'path'
 
-
-
-
 const log = {
     main:       debug('envy:main    '),
     config:     debug('envy:config  '),
@@ -18,8 +15,6 @@ const log = {
     return:     debug('envy:return  '),
     test:       debug('envy:test')
 }
-
-
 
 import { 
     EnvyConfig,
@@ -35,27 +30,44 @@ import {
 
 
 
-
 /** ### ε η ν ψ  
  * Load and parse environment variables.
  * 
- * @example
- * const ENV = envy({
- *  prefix: 'MY_LONG_PREFIX_',
- *  file: 'inherit'
- * })
+ *  ---
  *
-    @param {EnvyConfig | EnvyOptions} [config] - Object or string representing keys to extract from process.env.
-    @param {EnvyOptions} [options] - Additional options for the parser.
-    @param {CoerceTypes} [options.type] - Global type for automatic type coercion.
-    @param {string} [options.prefix] - String prefix for matching, parsing and removing.
-    @param {boolean} [options.coerce] - Enable automatic type coercion to the provided or default types.
-    @param {VerboseTypes} [options.verbose] - Enable logging / throwing errors.
-    @param {string} [options.file] - Path to your .env file relative to the projects root.
-    @param {boolean} [options.override] - Override any environment variables that have already been set on your machine with values from your .env file.
-    @param {EncodingTypes} [options.encoding] - Load and parse .env files with alternative encodings.
-    @returns {EnvyReturnObject} - Object containing parsed environment variables.
-    */
+ *  #### Config
+ *
+ *  An object of key-values containing parser instructions. See `EnvyConfigItem`
+ *
+ *  | option | type | default | description |
+ *  |:--|:--|:--|:--|
+ *  key | `string` | `null` | The key to assign the found value to
+ *  type | `CoerceTypes` | `null`| The type to coerce the found values to
+ *  default | `string` | `undefined` | The default value to use if the env values is not found
+ *
+ *  ---
+ *
+ *  #### Options
+ * 
+ *  | option | type | default | description |
+ *  |:--|:--|:--|:--|
+ *  type | `CoerceTypes` | `null` | The global type to coerce all values to, unless locally overridden
+ *  prefix | `string` | `null` | The prefix to match and replace for all keys
+ *  coerce | `boolean` | `false` | Enable automatic type coercion
+ *  verbose | `0, 1, 2` | `0` | Enable log/error on undefined keys or coercion errors. See VerboseTypes
+ *  file | `string` | `"inherit"` | Path to custom .env file, or 'inherit' (default) to use `.env.NODE_ENV`
+ *  override | `boolean` | `true` | Enable overriding key-values which are already set
+ *  encoding | `EncodingTypes` | `"utf8"` | Parse and load .env files with alternate encoding types
+ * 
+ *  ---
+ *  @example
+ *  const ENV = envy({
+ *     prefix: 'MY_LONG_PREFIX_',
+ *     file: 'inherit'
+ *  })
+ *
+ *
+*/
 
 const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyReturnObject => {
     log.main('ENVY START ' + '='.repeat(60))
@@ -65,10 +77,6 @@ const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyRet
     if(typeof config === 'object' && !options){
         options = config as EnvyOptions
     }
-
-    // if(window && typeof window !== 'undefined'){
-        // log.main(``)
-    // }
 
     //& define a settings object based on config                                                    
     let settings = {
