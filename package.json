@@ -39,15 +39,5 @@
   "files": [
     "./dist",
     "README.md"
-  ],
-  "tsup": {
-    "entry": [
-      "./src/main.ts"
-    ],
-    "formats":"cjs",
-    "splitting":"false",
-    "minify":true,
-    "dts": true,
-    "legacyOutput": true
-  }
+  ]
 }
