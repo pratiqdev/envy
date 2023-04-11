@@ -38,13 +38,16 @@
   },
   "files": [
     "./dist",
-    "index.js",
     "README.md"
   ],
   "tsup": {
     "entry": [
       "./src/main.ts"
     ],
-    "dts": true
+    "formats":"cjs",
+    "splitting":"false",
+    "minify":true,
+    "dts": true,
+    "legacyOutput": true
   }
 }
