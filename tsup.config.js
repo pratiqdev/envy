@@ -17,7 +17,7 @@ export default defineConfig((options) => {
   return {
     // minify: !options.watch,
     entryPoints: ['./src/main.ts'],
-    format: ['cjs'],
+    format: ['cjs', 'esm'],
     outDir: './dist',
     dts: true,
     dtsBundle: true,
@@ -25,6 +25,6 @@ export default defineConfig((options) => {
     sourcemap: false,
     minify: false,
     clean: true,
-    legacyOutput: true
+    legacyOutput: false
   }
 })

@@ -27,7 +27,8 @@ import {
     EnvyParseConfig,
     EnvyParseItem,
     Coerce,
-    Verbose
+    Verbose,
+    EnvyReturnObject
 } from './types.js'    
 
 
@@ -35,14 +36,35 @@ import {
 
 
 
-/** ε η ν ψ  
+/** ### ε η ν ψ  
+ * Load and parse environment variables.
  * 
- * 
-*/
-const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
+ * @example
+ * const ENV = envy({
+ *  prefix: 'MY_LONG_PREFIX_',
+ *  file: 'inherit'
+ * })
+ *
+    @param {EnvyConfig | EnvyOptions} [config] - Object or string representing keys to extract from process.env.
+    @param {EnvyOptions} [options] - Additional options for the parser.
+    @param {CoerceTypes} [options.type] - Global type for automatic type coercion.
+    @param {string} [options.prefix] - String prefix for matching, parsing and removing.
+    @param {boolean} [options.coerce] - Enable automatic type coercion to the provided or default types.
+    @param {VerboseTypes} [options.verbose] - Enable logging / throwing errors.
+    @param {string} [options.file] - Path to your .env file relative to the projects root.
+    @param {boolean} [options.override] - Override any environment variables that have already been set on your machine with values from your .env file.
+    @param {EncodingTypes} [options.encoding] - Load and parse .env files with alternative encodings.
+    @returns {EnvyReturnObject} - Object containing parsed environment variables.
+    */
+
+const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyReturnObject => {
     log.main('ENVY START ' + '='.repeat(60))
     log.config(JSON.stringify(config, null, 2))
     log.options(JSON.stringify(options, null, 2))
+
+    if(typeof config === 'object' && !options){
+        options = config as EnvyOptions
+    }
 
     // if(window && typeof window !== 'undefined'){
         // log.main(``)
@@ -174,8 +196,8 @@ const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
 
         log.coerce(`\n>>>>>>>>>> coercing`)
 
-        //$ set retrunable diectly if coercion disabled
-        if(settings.coerce < 1 && !settings.globalType){
+        //$ set returnable diectly if coercion disabled
+        if(typeof settings.coerce === 'number' && settings.coerce < 1 && !settings.globalType){
             log.coerce(`Coercion disabled and no global type. Setting val directly`)
             setReturnable(ITEM.objKey, ITEM.raw)
             return;

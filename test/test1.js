@@ -1,6 +1,14 @@
-import assert from 'assert'
-import envy from '../dist/main.js'
-import { expect } from 'chai';
+// import assert from 'assert'
+// import { expect } from 'chai';
+// import envy from '../dist/main.js'
+const assert = require('assert')
+const {expect} = require('chai')
+const envy = require('../index.js')
+
+if(typeof envy !== 'function'){
+  console.log('>> envy not a func:', envy)
+  process.exit(1)
+}
 
 
 

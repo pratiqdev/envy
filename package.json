@@ -2,10 +2,10 @@
   "name": "@pratiq/envy",
   "version": "1.0.6",
   "description": "Easily load, parse and manage env variables",
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
+  "main": "./index.js",
+  "module": "./dist/main.mjs",
   "types": "./dist/main.d.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "tsup",
     "test": "clear && tsup && mocha",

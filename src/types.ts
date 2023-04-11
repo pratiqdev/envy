@@ -93,9 +93,10 @@ export type EnvyOptions = {
     /** Enable automatic type coercion to the provided or default types */
     coerce?: boolean;
     
+    /** Enable logging / throwing errors */
     verbose?: VerboseTypes;
     
-    /** Root relative file path to your .env file.
+    /** Path to your .env file relative to the projects root.
      * 
      * @example
      * file ".env.abc" uses ".env.abc"
@@ -106,6 +107,7 @@ export type EnvyOptions = {
     /** Override any environment variables that have already been set on your machine with values from your .env file. */
     override?: boolean;
 
+    /** Load and parse .env files with alternative encodings */
     encoding?: EncodingTypes
 }
 
@@ -165,3 +167,5 @@ export type EnvyParseItem = {
     type: CoerceTypes;
     default?: CoerceTypes;
 }
+
+export type EnvyReturnObject = { [key:string]: unknown }

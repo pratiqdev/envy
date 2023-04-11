@@ -9,7 +9,7 @@
 </p>
 
 
-<p align="center">Load, parse and manage enviromnemt variables the easy way!</p>
+<p align="center">Load, parse and manage environment variables the easy way!</p>
 
 
 
@@ -24,23 +24,40 @@
 # **Installation**
 **Install using your preferred package manager**
 ```bash
-npm install envy
+pnpm add @pratiq/envy
 ```
+
+<br />
+<br />
+<br />
+
+
+# **Basic Usage**
+
+Grab the keys, trim the prefix and return and object with key-values. 
 
 ```bash
-yarn add envy
+# .env.testing
+MY_LONG_ASS_PREFIX_API_URL=https://my-server.xyz/my-api/
+MY_LONG_ASS_PREFIX_API_KEY=1a2b3c4d5e6f
+```
+```js
+const envy = require('@pratiq/envy')
+
+const api = envy('MY_LONG_ASS_PREFIX_API_')
+const res = fetch(`${api.URL}/restricted`, { api_key: api.KEY })
 ```
 
-```bash
-pnpm add envy
-```
 
 <br />
 <br />
 <br />
 
+# **Usage Examples**
 
-# **Usage**
+
+
+
 **Common usage instructions and examples**
 
 ```js
@@ -67,20 +84,22 @@ const vars = envy({
 > <summary>
 > Example key-value list
 > </summary>
->
+> 
 > | key | value |
 > |-|-|
-> `MONGO_CONNECTION_URI`      | mongodb+srv://x:x@cluster3.f32sf.mongodb.net
+> `MONGO_CONNECTION_URI`      | mongodb+srv://\<user\>:\<password\>@cluster1.abcd123.mongodb.net
 > `MONGO_PREFIX`              | myCollection
 > `SIMULATION_X_MULTIPLIER`   | 52_000
 > `SIMULATION_Y_MULTIPLIER`   | 4.567
 > `SIMULATION_Z_MULTIPLIER`   | 5e1
-> `AUTH_GITHUB_APP_ID`        | 829434
-> `AUTH_GITHUB_ID`            | Iv2.098f7c9a7sfc923rc
+> `AUTH_GITHUB_APP_ID`        | 827431
+> `AUTH_GITHUB_ID`            | Iv2.056f7c9a5sfc923rc
 > `AUTH_GITHUB_SECRET`        | a7bdaec7de897cdbed6aebc7de6a08e7dbc9
 > `NEXT_PUBLIC_CLIENT_ID`     | 135
-> `NEXT_PUBLIC_CLIENT_KEY`    | 74617231389
-> `NEXT_PUBLIC_CLIENT_SECRET` | 7adn293yrmifydsa9i320 
+> `NEXT_PUBLIC_CLIENT_KEY`    | 74617321489
+> `NEXT_PUBLIC_CLIENT_SECRET` | 7adn293yrmnefydsa9i320 
+> 
+> *These values are imitations of the types and values of their real value*
 
 
 </details>
@@ -204,8 +223,20 @@ const vars = envy({
 ## **File**
 Provide a path to the file to load or inherit from the current environment
 ```js
-const vars = envy({}, { file: '.env.testing' })
-const vars = envy({}, { file: 'inherit' })
+const vars = envy({ file: '.env.testing' })
+const vars = envy({ file: 'inherit' }) // default, same as:
+const vars = envy()
+```
+Many hosting platforms and frameworks set the `NODE_ENV` variable when starting the process, which 
+is useful for determining which .env file to load. Vercel for example sets this value to 'development',
+'preview' or 'production' depending on the target environment.  
+
+Starting the node process with the `NODE_ENV` variable set will load the .env 
+file with the respective name, for example:
+
+```bash
+$ NODE_ENV = testing      # ".env.testing"
+$ NODE_ENV = development  # ".env.development"
 ```
 <br />
 
@@ -215,6 +246,10 @@ Load and parse keys that include the prefix, then remove the prefix from the key
 ```js
 const vars = envy({}, { prefix: 'NEXT_PUBLIC_CLIENT_' })
 ```
+The string prefix, if provided to envy as the first argument, will override options.prefix
+```js
+const vars = envy('OOPS_', { prefix: 'NEXT_PUBLIC_CLIENT_' }) // => "OOPS_..."
+```
 <br />
 
 
@@ -222,7 +257,7 @@ const vars = envy({}, { prefix: 'NEXT_PUBLIC_CLIENT_' })
 Load and parse .env files that use encoding other than `utf8` - the default. Envy automatically 
 attempts to convert from the provided encoding to `utf-8`, or you can define what encoding it should use.
 ```js
-const vars = envy({}, { encoding: 'base64' })
+const vars = envy({ encoding: 'base64' })
 ```
 <br />
 
@@ -230,7 +265,7 @@ const vars = envy({}, { encoding: 'base64' })
 ## **Verbose**
 Set envy to log or throw errors when an error is encountered during .env loading or parsing.
 ```js
-const vars = envy({}, {
+const vars = envy({
     verbose: 0, 
     // 0 disabled
     // 1 enabled
@@ -261,3 +296,35 @@ const vars = envy({
 })
 ```
 <br />
+<br />
+<br />
+
+
+
+
+
+# Types / Interfaces
+
+
+## Override Patterns
+
+The following overrides are considered valid usage:
+```js
+envy()
+envy('prefix')
+envy({ config })
+envy(null, { options })
+envy({}, { options })
+envy('prefix', { options }) 
+envy({ config }, { options })
+envy({ options })
+```
+
+<br />
+
+## Type Definitions
+
+```ts
+
+
+```
