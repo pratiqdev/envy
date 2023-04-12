@@ -3,9 +3,6 @@ import dotenv from 'dotenv'
 import debug from 'debug'
 import {resolve} from 'path'
 
-
-
-
 const log = {
     main:       debug('envy:main    '),
     config:     debug('envy:config  '),
@@ -19,34 +16,67 @@ const log = {
     test:       debug('envy:test')
 }
 
-
-
 import { 
     EnvyConfig,
     EnvyOptions,
     EnvyParseConfig,
     EnvyParseItem,
     Coerce,
-    Verbose
+    Verbose,
+    EnvyReturnObject
 } from './types.js'    
 
 
 
 
 
-
-/** ε η ν ψ  
+/** ### ε η ν ψ  
+ * Load and parse environment variables.
  * 
+ *  ---
+ *
+ *  #### Config
+ *
+ *  An object of key-values containing parser instructions. See `EnvyConfigItem`
+ *
+ *  | option | type | default | description |
+ *  |:--|:--|:--|:--|
+ *  key | `string` | `null` | The key to assign the found value to
+ *  type | `CoerceTypes` | `null`| The type to coerce the found values to
+ *  default | `string` | `undefined` | The default value to use if the env values is not found
+ *
+ *  ---
+ *
+ *  #### Options
  * 
+ *  | option | type | default | description |
+ *  |:--|:--|:--|:--|
+ *  type | `CoerceTypes` | `null` | The global type to coerce all values to, unless locally overridden
+ *  prefix | `string` | `null` | The prefix to match and replace for all keys
+ *  coerce | `boolean` | `false` | Enable automatic type coercion
+ *  verbose | `0, 1, 2` | `0` | Enable log/error on undefined keys or coercion errors. See VerboseTypes
+ *  file | `string` | `"inherit"` | Path to custom .env file, or 'inherit' (default) to use `.env.NODE_ENV`
+ *  override | `boolean` | `true` | Enable overriding key-values which are already set
+ *  encoding | `EncodingTypes` | `"utf8"` | Parse and load .env files with alternate encoding types
+ * 
+ *  ---
+ *  @example
+ *  const ENV = envy({
+ *     prefix: 'MY_LONG_PREFIX_',
+ *     file: 'inherit'
+ *  })
+ *
+ *
 */
-const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
+
+const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyReturnObject => {
     log.main('ENVY START ' + '='.repeat(60))
     log.config(JSON.stringify(config, null, 2))
     log.options(JSON.stringify(options, null, 2))
 
-    // if(window && typeof window !== 'undefined'){
-        // log.main(``)
-    // }
+    if(typeof config === 'object' && !options){
+        options = config as EnvyOptions
+    }
 
     //& define a settings object based on config                                                    
     let settings = {
@@ -174,8 +204,8 @@ const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
 
         log.coerce(`\n>>>>>>>>>> coercing`)
 
-        //$ set retrunable diectly if coercion disabled
-        if(settings.coerce < 1 && !settings.globalType){
+        //$ set returnable diectly if coercion disabled and return, or continue (coerce 1)
+        if(typeof settings.coerce === 'number' && settings.coerce < 1 && !settings.globalType){
             log.coerce(`Coercion disabled and no global type. Setting val directly`)
             setReturnable(ITEM.objKey, ITEM.raw)
             return;
@@ -242,10 +272,10 @@ const envy = (config?: EnvyConfig, options?: EnvyOptions) => {
                     .replace(/,/g, '')
 
                 ITEM.raw = ITEM.raw.includes('.')
-                            ? parseFloat(ITEM.raw)
-                            : Number.isNaN(ITEM.raw) 
-                                ? parseInt(ITEM.raw)
-                                : Number(ITEM.raw) 
+                    ? parseFloat(ITEM.raw)
+                    : Number.isNaN(ITEM.raw) 
+                        ? parseInt(ITEM.raw)
+                        : Number(ITEM.raw) 
             }
 
             setReturnable(ITEM.objKey, ITEM.raw)

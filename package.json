@@ -1,11 +1,11 @@
 {
   "name": "@pratiq/envy",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "description": "Easily load, parse and manage env variables",
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
+  "main": "./index.js",
+  "module": "./dist/main.mjs",
   "types": "./dist/main.d.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "tsup",
     "test": "clear && tsup && mocha",
@@ -23,6 +23,7 @@
   "author": "pratiqdev",
   "license": "ISC",
   "dependencies": {
+    "@pratiq/finder": "^1.0.22",
     "debug": "^4.3.4",
     "dotenv": "^16.0.1"
   },
@@ -38,13 +39,6 @@
   },
   "files": [
     "./dist",
-    "index.js",
     "README.md"
-  ],
-  "tsup": {
-    "entry": [
-      "./src/main.ts"
-    ],
-    "dts": true
-  }
+  ]
 }

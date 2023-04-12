@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@pratiq/finder': ^1.0.22
   '@types/debug': ^4.1.7
   '@types/node': ^18.15.3
   '@types/spellchecker': ^3.5.0
@@ -13,6 +14,7 @@ specifiers:
   typescript: ^4.7.4
 
 dependencies:
+  '@pratiq/finder': 1.0.22
   debug: 4.3.4
   dotenv: 16.0.3
 
@@ -246,6 +248,14 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
+
+  /@pratiq/finder/1.0.22:
+    resolution: {integrity: sha512-Q0JYPeinlDhvR2t14aiO7lzMuvdQ5q2gNzkipBgRq7A3UPX5ITyF3ToRSmLZC6YQcuf+eaJC2waltaTzYHT+yQ==}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /@types/debug/4.1.7:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}

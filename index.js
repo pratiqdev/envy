@@ -1,2 +1,2 @@
-import envy from './dist/main.js'
-export default envy
+const envy = require('./dist/main.js')
+module.exports = envy.default || envy

@@ -91,11 +91,12 @@ export type EnvyOptions = {
     prefix?: string;
     
     /** Enable automatic type coercion to the provided or default types */
-    coerce?: boolean;
+    coerce?: 0 | 1 | 2;
     
+    /** Enable logging / throwing errors */
     verbose?: VerboseTypes;
     
-    /** Root relative file path to your .env file.
+    /** Path to your .env file relative to the projects root.
      * 
      * @example
      * file ".env.abc" uses ".env.abc"
@@ -106,21 +107,22 @@ export type EnvyOptions = {
     /** Override any environment variables that have already been set on your machine with values from your .env file. */
     override?: boolean;
 
+    /** Load and parse .env files with alternative encodings */
     encoding?: EncodingTypes
 }
 
-/** Config object for individual envy item */
+/**
+ * @name EnvyConfigItem   
+ * Config object for individual envy item */
 export type EnvyConfigItem = {
     key: string;
     type?: CoerceTypes;
-    default?: CoerceTypes;
+    default?: string;
 }
 
-/** Value of envy config tuples */
-export type EnvyConfigTupleValue = EnvyConfigItem | string | null
 
 /** Tuples used in the envy config object */
-export type EnvyConfig = null | string | { [key:string]: EnvyConfigTupleValue }
+export type EnvyConfig = null | string | { [key:string]: EnvyConfigItem | string | null }
 
 /** Keys and values directly from process.env */
 export type EnvyDirectObject = { [key:string]: string }
@@ -165,3 +167,5 @@ export type EnvyParseItem = {
     type: CoerceTypes;
     default?: CoerceTypes;
 }
+
+export type EnvyReturnObject = { [key:string]: unknown }
