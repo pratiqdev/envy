@@ -456,3 +456,11 @@ export const Encoding = {
  } as const;
 export type EncodingTypes = typeof Encoding[keyof typeof Encoding];
 ```
+
+<br />
+<br />
+<br />
+
+## License
+
+This package is provided under the MIT license. View LICENSE.txt for more info.
