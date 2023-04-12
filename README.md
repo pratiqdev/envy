@@ -278,23 +278,50 @@ const vars = envy({
 
 
 ## **Coerce**
-Enable global type coercion to the provided type. All values will be coerced to this value, unless
-keys provide a key config object with their own type, or a different `type` on the key config object, or if global coerce is set to false.
+Enable global type coercion to the provided type, or enable automatic type coercion. All values will 
+be coerced to this value, unless config provides items with their own type, or if global coerce is 
+set to 0 (disabled).
+
+- 0: No type coercion
+- 1: Strict type coercion
+- 2: Inferred type coercion
+
+```js
+const vars = envy({
+    age: 'TOKEN_AGE',       // coerced to inferred type
+    expires: 'TOKEN_EXP',   // coerced to inderred type
+    name: {
+        key: 'TOKEN_NAME',  // string (not coerced)
+        type: 'string',
+    }
+}, { 
+    coerce: 2,
+})
+```
+<br />
+
+
+
+
+## **Type**
+Provide a type to coerce all values to, if coerce is set at or above 1, or if config items 
+provide a custom type.
 
 Avalable types are `string`, `number`, `boolean`, `array` and `object`.
 ```js
 const vars = envy({
-    age: 'TOKEN_AGE',
-    expires: 'TOKEN_EXP',
+    age: 'TOKEN_AGE',       // coerced to number
+    expires: 'TOKEN_EXP',   // coerced to number
     name: {
-        key: 'TOKEN_NAME',
+        key: 'TOKEN_NAME',  // string (not coerced)
         type: 'string',
     }
 }, { 
-    coerce: true,
+    coerce: 1,
     type: 'number'
 })
 ```
+
 <br />
 <br />
 <br />
@@ -320,11 +347,84 @@ envy({ config }, { options })
 envy({ options })
 ```
 
+The most common overrides are string prefix, or config object:
+```js
+envy('prefix_')
+envy({
+    prefix: 'prefix_',
+    file: 'inherit',
+    coerce: 2,
+})
+```
 <br />
 
 ## Type Definitions
 
+
+### EnvyOptions
 ```ts
+export type EnvyOptions = {
+
+    // Global type for automatic type coercion
+    type?: CoerceTypes;
+    
+    // Find and parse keys with prefix and return keys 
+    // with prefix removed
+    prefix?: string;
+    
+    // Enable automatic type coercion to the provided or 
+    // inferred types
+    coerce?: 0 | 1 | 2;
+    
+    // Enable logging / throwing errors
+    verbose?: VerboseTypes;
+    
+    // Path to your .env file relative to the projects root.
+    file?: string;
+
+    // Override any environment variables that have already 
+    // been set on your machine with values from your .env file. 
+    override?: boolean;
+
+    // Load and parse .env files with alternative encodings
+    encoding?: EncodingTypes
+}
+```
 
 
+### ConfigItem
+Key parsing definitions used in the envy config.
+```ts
+export type EnvyConfigItem = {
+    // The key to match and parse
+    key: string;
+    // The type for coercion
+    type?: CoerceTypes;
+    // The default value if no key found
+    default?: string;
+}
+```
+
+
+### CoerceTypes 
+```ts
+export const Coerce = {
+    STRING: 'string',
+    NUMBER: 'number',
+    ARRAY: 'array',
+    OBJECT: 'object',
+    BOOLEAN: 'boolean',
+} as const;
+export type CoerceTypes = typeof Coerce[keyof typeof Coerce];
+```
+
+
+### VerboseTypes 
+```ts
+export const Verbose = {
+    DISABLED: 0,
+    ENABLED: 1,
+    THROW: 2,
+} as const;
+export type VerboseTypes = typeof Verbose[keyof typeof Verbose];
 ```
