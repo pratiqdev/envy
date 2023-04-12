@@ -4,7 +4,7 @@
 
 <p align='center'>
 <img src='https://img.shields.io/badge/license_MIT-black'>
-<img src='https://img.shields.io/badge/npm_1.0.9-black'>
+<img src='https://img.shields.io/badge/npm_1.0.12-black'>
 <img src='https://img.shields.io/badge/tests_passing-black'>
 </p>
 
@@ -14,18 +14,29 @@
 
 
 
-<br />
-<br />
-<br />
 
 
 
+
+
+<br />
+<br />
+<br />
 
 # **Installation**
+
 **Install using your preferred package manager**
 ```bash
 pnpm add @pratiq/envy
 ```
+
+
+
+
+
+
+
+
 
 <br />
 <br />
@@ -47,6 +58,14 @@ const envy = require('@pratiq/envy')
 const api = envy('MY_LONG_ASS_PREFIX_API_')
 const res = fetch(`${api.URL}/restricted`, { api_key: api.KEY })
 ```
+
+
+
+
+
+
+
+
 
 
 <br />
@@ -203,17 +222,29 @@ const vars = envy({
     }
 })
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <br />
 <br />
 <br />
-
-
-
-
-
-
-
-
 
 # **Options**
 **Envy provides the following options to control its behavior or alter the output.**
@@ -322,12 +353,40 @@ const vars = envy({
 })
 ```
 
-<br />
-<br />
-<br />
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br />
+<br />
+<br />
 
 
 # Types / Interfaces
