@@ -1,6 +1,6 @@
 {
   "name": "@pratiq/envy",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Easily load, parse and manage env variables",
   "main": "./index.js",
   "module": "./dist/main.mjs",

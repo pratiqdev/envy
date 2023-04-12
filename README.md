@@ -428,3 +428,31 @@ export const Verbose = {
 } as const;
 export type VerboseTypes = typeof Verbose[keyof typeof Verbose];
 ```
+
+
+
+### EncodingTypes 
+```ts
+export const Encoding = {
+    UTF8: 'utf8',
+    UCS2: 'ucs2',
+    ASCII: 'ascii',
+    UTF16LE: 'utf16le',
+    UTF16BE: 'utf16be',
+    UTF32LE: 'utf32le',
+    UTF32BE: 'utf32be',
+    ISO88591: 'iso88591',
+    ISO88592: 'iso88592',
+    ISO88593: 'iso88593',
+    ISO88594: 'iso88594',
+    ISO88595: 'iso88595',
+    ISO88596: 'iso88596',
+    ISO88597: 'iso88597',
+    ISO88598: 'iso88598',
+    ISO88599: 'iso88599',
+    ISO885910: 'iso885910',
+    ISO885913: 'iso885913',
+    ISO885915: 'iso885915'
+ } as const;
+export type EncodingTypes = typeof Encoding[keyof typeof Encoding];
+```
