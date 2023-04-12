@@ -4,7 +4,7 @@
 
 <p align='center'>
 <img src='https://img.shields.io/badge/license_MIT-black'>
-<img src='https://img.shields.io/badge/npm_1.0.4-black'>
+<img src='https://img.shields.io/badge/npm_1.0.9-black'>
 <img src='https://img.shields.io/badge/tests_passing-black'>
 </p>
 
