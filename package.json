@@ -23,6 +23,7 @@
   "author": "pratiqdev",
   "license": "ISC",
   "dependencies": {
+    "@pratiq/finder": "^1.0.22",
     "debug": "^4.3.4",
     "dotenv": "^16.0.1"
   },

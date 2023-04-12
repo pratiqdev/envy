@@ -91,7 +91,7 @@ export type EnvyOptions = {
     prefix?: string;
     
     /** Enable automatic type coercion to the provided or default types */
-    coerce?: boolean;
+    coerce?: 0 | 1 | 2;
     
     /** Enable logging / throwing errors */
     verbose?: VerboseTypes;

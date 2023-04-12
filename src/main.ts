@@ -204,7 +204,7 @@ const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyRet
 
         log.coerce(`\n>>>>>>>>>> coercing`)
 
-        //$ set returnable diectly if coercion disabled
+        //$ set returnable diectly if coercion disabled and return, or continue (coerce 1)
         if(typeof settings.coerce === 'number' && settings.coerce < 1 && !settings.globalType){
             log.coerce(`Coercion disabled and no global type. Setting val directly`)
             setReturnable(ITEM.objKey, ITEM.raw)
@@ -272,10 +272,10 @@ const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyRet
                     .replace(/,/g, '')
 
                 ITEM.raw = ITEM.raw.includes('.')
-                            ? parseFloat(ITEM.raw)
-                            : Number.isNaN(ITEM.raw) 
-                                ? parseInt(ITEM.raw)
-                                : Number(ITEM.raw) 
+                    ? parseFloat(ITEM.raw)
+                    : Number.isNaN(ITEM.raw) 
+                        ? parseInt(ITEM.raw)
+                        : Number(ITEM.raw) 
             }
 
             setReturnable(ITEM.objKey, ITEM.raw)

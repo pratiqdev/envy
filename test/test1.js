@@ -1,9 +1,8 @@
-// import assert from 'assert'
-// import { expect } from 'chai';
-// import envy from '../dist/main.js'
 const assert = require('assert')
 const {expect} = require('chai')
 const envy = require('../index.js')
+const finder = require('@pratiq/finder')
+const fs = require('fs')
 
 if(typeof envy !== 'function'){
   console.log('>> envy not a func:', envy)
@@ -47,15 +46,6 @@ describe(heading('A | Option testing'), () => {
           },
         }, { verbose: 0 })
       ).to.not.throw()
-
-      // console.log( envy({
-      //   file: 'PREF_ENV_NAME',
-      //   a: {
-      //     key: 'EMPTY_KEY',
-      //     default: '123',
-      //     type: 'number',
-      //   },
-      // }, { verbose: 0 }))
     
     });
 
@@ -140,7 +130,34 @@ describe(heading('A | Option testing'), () => {
       expect(ENVY_1.name).to.equal('1')
     });
 
-    it('A.10 | { override: false } Should disable env override.', () => {
+    it('A.10  | { coerce: 1 } Should enable type coercion using provided type.', () => {
+      const ENVY_1 = envy({
+        name: {
+          key: 'BLAP_ONE',
+          type: 'number'
+        }
+      }, { 
+        coerce: 1,
+        file: '.env.testing'
+       })
+
+      expect(ENVY_1.name).to.equal(1)
+    });
+
+    it('A.11  | { coerce: 2 } Should enable automatic type coercion', () => {
+      const ENVY_1 = envy({
+        name: {
+          key: 'BLAP_ONE',
+        }
+      }, { 
+        coerce: 2,
+        file: '.env.testing'
+       })
+
+      expect(ENVY_1.name).to.equal(1)
+    });
+
+    it('A.12 | { override: false } Should disable env override.', () => {
       /*
         Override set to false should prevent new calls to envy from overriding previously set values
         May/should be used when calling envy multilpe times within the same running process
@@ -163,12 +180,12 @@ describe(heading('A | Option testing'), () => {
       // expect(ENVY_4.ENV_NAME).to.equal('LOCAL')
     });
 
-    it('A.11 | { type: "..." } Should match global type definition.', () => {
+    it('A.13 | { type: "..." } Should match global type definition.', () => {
       /*
         Override set to false should prevent new calls to envy from overriding previously set values
         May/should be used when calling envy multilpe times within the same running process
       */
-      assert(Object.entries(envy('BOOLEAN_', {file: '.env.match', coerce: 0}))
+      assert(Object.entries(envy('BOOLEAN_', {file: '.env.match',coerce: false}))
         .every(x => typeof x[1] === 'string'))
 
       assert(Object.entries(envy('BOOLEAN_', {file: '.env.match', type: 'b'}))
@@ -182,7 +199,7 @@ describe(heading('A | Option testing'), () => {
 
 
 
-      assert(Object.entries(envy('NUMBER__', {file: '.env.match', coerce: 0}))
+      assert(Object.entries(envy('NUMBER__', {file: '.env.match',coerce: false}))
         .every(x => typeof x[1] === 'string'))
       
       assert(Object.entries(envy('NUMBER__', {file: '.env.match', type: 'n'}))
@@ -205,7 +222,7 @@ describe(heading('A | Option testing'), () => {
 
 
 
-      assert(Object.entries(envy('OBJECT__', {file: '.env.match', coerce: 0}))
+      assert(Object.entries(envy('OBJECT__', {file: '.env.match',coerce: false}))
         .every(x => typeof x[1] === 'string'))
 
       assert(Object.entries(envy('OBJECT__', {file: '.env.match', type: 'o'}))
@@ -219,7 +236,7 @@ describe(heading('A | Option testing'), () => {
 
 
 
-      assert(Object.entries(envy('ARRAY___', {file: '.env.match', coerce: 0}))
+      assert(Object.entries(envy('ARRAY___', {file: '.env.match',coerce: false}))
         .every(x => typeof x[1] === 'string'))
 
       assert(Object.entries(envy('ARRAY___', {file: '.env.match', type: 'a'}))
@@ -233,15 +250,13 @@ describe(heading('A | Option testing'), () => {
       
     });
 
-    it('A.12 | { encoding: "base64" } Should use specified encoding.', () => {
+    it('A.14 | { encoding: "base64" } Should use specified encoding.', () => {
      const ENVY = envy('USER', { file: './lib/encodings/.env.encoding_base64', encoding: 'hex' })
-      console.log(ENVY)
       assert( Object.entries(ENVY).length > 1 )
     });
     
-    it('A.13 | { encoding: "hex" } Should use specified encoding.', () => {
+    it('A.15 | { encoding: "hex" } Should use specified encoding.', () => {
       const ENVY = envy('USER', { file: './lib/encodings/.env.encoding_hex', override: true })
-      console.log(ENVY)
      assert( Object.entries(ENVY).length > 1 )
     });
 
@@ -485,23 +500,26 @@ describe(heading('B | Config testing'), function () {
 describe(heading('C | Variable matching'), function () {
   this.timeout(10_000)
 
-  it('C.1 | Should match process.env from each ".env" file', () => {
-    const files = [
-      '.env.',
-      '.env.development',
-      '.env.production',
-      '.env.local',
-      '.env.types',
-      '.env.local',
-      '.env.giant_file',
-      '.env.match',
-      '.env.testing',
-    ]
+  it('C.1 | Should match process.env from each ".env" file', async () => {
 
-    files.forEach(file => {
-      const ENVY = envy(null, { file })
+    const fileData = await finder({
+      paths: ["./files/"]
+    })
+
+
+    fileData.files.forEach(async file => {
+      const rawVars = {}
+      const rawFile = fs.readFileSync(file.path, { encoding: file.path.includes('encoding') ? file.path.split('encoding_') : 'utf8'})
+      const lines = rawFile.split('\n')
       
-      assert(Object.entries(ENVY).every(( [k,v] ) => v === process.env[k] ))
+      lines.forEach(line => {
+        const parts = line.split('=')
+        rawVars[parts[0].trim()] = parts[1].trim()
+      })
+
+
+      const ENVY = envy({ file: file.path })
+      assert(Object.entries(ENVY).every(( [k,v] ) => v === rawVars[k] ))
     })
 
   })
