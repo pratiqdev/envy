@@ -186,7 +186,11 @@ const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyRet
     //& Simple util to set keyvals on the returnable object
     const setReturnable = (k:string, v:any) => {
         log.set(`Setting "${k}" = "${v}" <${typeof v}>`)
-        returnable[k] = v
+        if(k === '' && settings.prefix){
+            returnable[settings.prefix] = v
+        }else{
+            returnable[k] = v
+        }
     }
      
 
