@@ -114,12 +114,16 @@ export type EnvyOptions = {
 /**
  * @name EnvyConfigItem   
  * Config object for individual envy item */
-export type EnvyConfigItem = {
+// export type EnvyConfigItem = {
+//     key: string;
+//     type?: CoerceTypes;
+//     default?: string;
+// }
+export type EnvyConfigItem<T extends CoerceTypes = "string"> = {
     key: string;
-    type?: CoerceTypes;
-    default?: string;
-}
-
+    type?: T;
+    default?: T extends "string" ? string : T extends "number" ? number : T extends "array" ? any[] : T extends "object" ? Record<string, any> : T extends "boolean" ? boolean : never;
+};
 
 /** Tuples used in the envy config object */
 export type EnvyConfig = null | string | { [key:string]: EnvyConfigItem | string | null }

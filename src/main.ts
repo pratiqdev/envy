@@ -27,6 +27,23 @@ import {
 } from './types.js'    
 
 
+function toB(value: string | boolean | number): boolean {
+    if (typeof value === 'boolean') {
+        return value;
+    } else if (typeof value === 'string') {
+        const lowerCaseValue = value.toLowerCase().trim();
+        if (lowerCaseValue === 'true') {
+            return true;
+        } else if (lowerCaseValue === 'false') {
+            return false;
+        }
+    } else if (typeof value === 'number') {
+        return value !== 0;
+    }
+
+    // If the value is neither a boolean, string, nor a valid number representation, return false by default
+    return false;
+}
 
 
 
@@ -311,18 +328,7 @@ const envy = (config?: EnvyConfig | EnvyOptions, options?: EnvyOptions): EnvyRet
 
         //$ handle booleans                                                                         
         else if(settings.globalType.startsWith('b') || ITEM.type.startsWith('b')){
-            let b = false
-            let v = ITEM?.raw?.trim()?.toLowerCase()
-
-            if(
-                parseInt(v) > 0
-                || parseFloat(v) > 0
-                || v === 'true'
-            ){
-                b = true
-            }
-            
-            setReturnable(ITEM.objKey, b)
+            setReturnable(ITEM.objKey, toB(ITEM?.raw?.trim()?.toLowerCase()))
         }
         
         //$ handle strings (default)                                                                
